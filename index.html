@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<head>
+    <style>
+        #canvas {
+            background-color: rgb(255, 250, 234);
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div>
+        <h3>Точка A</h3>
+        <p>x: <input type="number" inputmode="decimal" id="Ax"></p>
+        <p>y: <input type="number" id="Ay"></p>
+        <p>Расстояние: <input type="number" id="r1"></p>
+    </div>
+
+    <div>
+        <h3>Точка B</h3>
+        <p>x: <input type="number" id="Bx"></p>
+        <p>y: <input type="number" id="By"></p>
+        <p>Расстояние: <input type="number" id="r2"></p>
+    </div>
+
+    <div>
+        <h3>Точка C</h3>
+        <p>x: <input type="number" id="Cx"></p>
+        <p>y: <input type="number" id="Cy"></p>
+        <p>Расстояние: <input type="number" id="r3"></p>
+    </div>
+
+    <div>
+        <button id="defaultButton" onclick="defaultButtonClick()">По умолчанию</button>
+        <button id="calcButton" onclick="calcButtonClick()">Рассчитать</button>
+    </div>
+
+    <div id="results">
+        <h3>Искомая точка</h3>
+        <p id="Ox">x: </p>
+        <p id="Oy">y: </p>
+    </div>
+
+    <!--
+    <canvas id="canvas" width="1000" height="500"></canvas>
+    -->
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+</body>
