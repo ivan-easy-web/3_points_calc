@@ -84,6 +84,7 @@ function calcButtonClick() {
     let r3 = parseFloat($('#r3').val())
 
     let O
+    var success = true
     try {
         O = findIntersectionPoint(A, r1, B, r2, C, r3)
 
@@ -92,67 +93,107 @@ function calcButtonClick() {
 
     } catch (e) {
         alert(e)
+        success = false
 
         $('#Ox').text(`x: `)
         $('#Oy').text(`y: `)
     }
 
-    // drawResults(A, r1, B, r2, C, r3, O)
+    drawResults(A, r1, B, r2, C, r3, O, success)
 }
 
-/*
+function drawResults(A, r1, B, r2, C, r3, O, success = true) {
+    graph.clear()
+
+    graph.drawCircle(A, r1, 'A')
+    graph.drawCircle(B, r2, 'B')
+    graph.drawCircle(C, r3, 'C')
+
+    if (success) {
+        graph.drawPoint(O, 'O')
+        
+        graph.drawLine(A, O, r1)
+        graph.drawLine(B, O, r2)
+        graph.drawLine(C, O, r3)
+    }
+}
+
 
 const width = 1000
 const height = 500
+const step = 25
 
-let canvas = $('#canvas')[0]
-
-class CanvasCoordinatePlane {
-    constructor(canvas, minX, maxX, minY, maxY) {
+class Graph {
+    constructor(canvas) {
         this.ctx = canvas.getContext("2d")
-
-        this.minX = minX
-        this.maxX = maxX
-        this.minY = minY
-        this.maxY = maxY
-
-        let xScale = width / (maxX - minX)
-        let yScale = height / (maxY - minY)
-
-        this.scale = (xScale <= yScale) ? xScale : yScale
-
-        for (var x = this.minX; x < this.maxX; x++) {
-            this.ctx.moveTo(x * this.scale, 0)
-            this.ctx.lineTo(x * this.scale, maxY * this.scale)
-            this.ctx.stroke()
-        }
-
-        for (var y = this.minY; y < this.maxY; y++) {
-            this.ctx.moveTo(0, y * this.scale)
-            this.ctx.lineTo(maxX * this.scale, y * this.scale)
-            this.ctx.stroke()
-        }
     }
 
-    drawCircle(C, r) {
-        this.ctx.beginPath()
-        this.ctx.arc(C.x * this.scale, C.y  * this.scale, r  * this.scale, 0, 2 * Math.PI)
+    drawGrid() {
+        this.ctx.moveTo(500, 0)
+        this.ctx.lineTo(500, 500)
+
+        this.ctx.moveTo(0, 250);
+        this.ctx.lineTo(1000, 250)
+
+        for (var x = 0; x <= width; x += step) {
+            this.ctx.moveTo(x, 240)
+            this.ctx.lineTo(x, 260)
+        }
+
+        for (var y = 0; y <= height; y += step) {
+            this.ctx.moveTo(490, y)
+            this.ctx.lineTo(510, y)
+        }
+
         this.ctx.stroke()
     }
+
+    clear() {
+        this.ctx.clearRect(0, 0, canvas.width, canvas.height)
+        this.drawGrid()
+    }
+
+    translatePoint(P) {
+        return {
+            x: P.x * step + 500,
+            y: - P.y * step + 250
+        }
+    }
+
+    drawPoint(P, name = '') {
+        let C = this.translatePoint(P)
+
+        this.ctx.beginPath();
+        this.ctx.arc(C.x, C.y, 3, 0, 2 * Math.PI)
+        this.ctx.fill()
+
+        this.ctx.font = "20px Arial";
+        this.ctx.fillText(name, C.x + 5, C.y - 5)
+    }
+
+    drawCircle(P, r, name = '') {
+        let C = this.translatePoint(P)
+
+        this.ctx.beginPath();
+        this.ctx.arc(C.x, C.y, r * step, 0, 2 * Math.PI)
+        this.ctx.stroke()
+
+        this.drawPoint(P, name)
+    }
+
+    drawLine(A, B, r = '') {
+        let tA = this.translatePoint(A)
+        let tB = this.translatePoint(B)
+
+        this.ctx.moveTo(tA.x, tA.y)
+        this.ctx.lineTo(tB.x, tB.y)
+        this.ctx.stroke()
+
+        this.ctx.fillText(r, (tA.x + tB.x) / 2 + 5, (tA.y + tB.y) / 2 - 5)
+    }
 }
 
-function drawResults(A, r1, B, r2, C, r3, O) {
+let canvas = $('#canvas')[0]
+let graph = new Graph(canvas)
 
-    let minX = Math.min(A.x, B.x, C.x) * 1.2
-    let maxX = Math.max(A.x, B.x, C.x) * 1.2
-    let minY = Math.min(A.y, B.y, C.y) * 1.2
-    let maxY = Math.max(A.y, B.y, C.y) * 1.2
 
-    let graph = new CanvasCoordinatePlane(canvas, minX, maxX, minY, maxY)
-    
-    graph.drawCircle(A, r1)
-    graph.drawCircle(B, r2)
-    graph.drawCircle(C, r3)
-}
-
-*/
